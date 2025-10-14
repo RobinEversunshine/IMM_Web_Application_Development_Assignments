@@ -65,7 +65,7 @@ button.addEventListener('click', readingAssistance);
 
 function readingAssistance(){
   for(const e of document.querySelectorAll("*")){
-    e.classList.add("readingAssistance");
+    e.classList.toggle("readingAssistance");
   }
 }
 
