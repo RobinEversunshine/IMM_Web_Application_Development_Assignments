@@ -1,0 +1,167 @@
+body{
+    margin: 0;
+    font-size: 16px;
+    font-family:'Franklin Gothic Medium';
+    background-color: gray;
+    background-image: url("https://www.bitdegree.org/learn/storage/media/images/css-tutorial-img1-01.o.png");
+    /* overflow-x: hidden; */
+
+    
+}
+
+
+div{
+    margin: 10px;
+    outline: 1px solid black;
+}
+
+
+article{
+    background-color: white;
+    padding: 10px;
+}
+
+
+h1{
+    font-size: 1.5em;
+    margin-left: 30px;
+}
+
+h2{
+    font-size: 1.5em;
+    margin-left: 30px;
+}
+
+h3{
+    font-size: 1.5em;
+    margin-left: 30px;
+}
+
+
+header{
+    /* width: 100%; */
+    left: 0;
+    top: 0;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+
+    position: sticky;
+    z-index: 10;
+    background-color: white;
+}
+
+
+footer{
+    /* width: 100%; */
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+
+    position: sticky;
+    z-index: 10;
+    background-color: white;
+}
+
+
+
+
+
+.featured{
+    font-size: 1.5em;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.featured_article{
+    height: 100%;
+}
+
+
+
+.technical_author{
+    color: white;
+    background-color: black;
+}
+
+
+.career_author{
+    color: white;
+    background-color: purple;
+}
+
+
+.categories{
+    display: flex;
+}
+
+
+.category{
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.category2{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+.required{
+    border: 3px solid red;
+}
+
+
+
+@media screen and (max-width: 480px){
+    * { 
+        font-size: 1.1em;
+        line-height: 1.5em;
+    } 
+
+    .categories{
+        flex-direction: row;
+    }
+
+
+    .logo{
+        width: 20px;
+        height: 20px;
+    }
+
+    .categories{
+        flex-direction: column;
+    }
+}
+
+
+@media (min-width: 480px){
+
+    .featured{
+        height: 80vh;
+    }
+
+    .logo{
+        width: 40px;
+        height: 40px;
+    }
+
+    .categories{
+        flex-direction: row;
+    }
+
+    header{
+        width: 100%;
+    }
+
+    footer{
+        width: 100%;
+    }
+}

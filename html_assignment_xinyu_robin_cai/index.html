@@ -14,10 +14,12 @@
     <meta property="og:title" content="Welcome to Elevated Temples of Houdini!" />
     <meta property="og:description" content="description" />
     <meta property="og:image" content="" />
+
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
     <header>
-        <img src="https://pngimg.com/uploads/github/github_PNG53.png" alt="site logo" width="20px" height="20px">
+        <img class="logo" src="https://pngimg.com/uploads/github/github_PNG53.png" alt="site logo" width="20px" height="20px">
         <nav>
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
@@ -35,94 +37,99 @@
 
     <hr>
 
-    <div>
+    <div class="featured">
         <h2>Featured Article</h2>
-        <div>
+        <article class="featured_article">
             <img width="200" src="https://cdnb.artstation.com/p/assets/images/images/084/354/469/large/xinyu-robin-cai-snipaste-2025-01-07-15-48-27.jpg?1738163978" alt="article cover">
             <h4>
                 <a href="articles/article1.html">Homemade Raytracing Renderer with Vex</a>
             </h4>
             <p>by Xinyu (Robin) Cai</p>
             <p>I used to make a very simple renderer in sop wrangle, and after the release of Copernicus in H20.5, I realized that I could manipulate pixels directly in a cop wrangle.</p>
-        </div>
+        </article>
     </div>
 
     <hr>
 
-    <div>
-        <div>
-            <div>
+    
+        <div class="categories">
+            <div class="category">
                 <h3>Industry</h3>
 
-                <div>
-                    <img width="200" src="https://cdnb.artstation.com/p/assets/images/images/084/354/469/large/xinyu-robin-cai-snipaste-2025-01-07-15-48-27.jpg?1738163978" alt="article cover">
-                    <h4>
-                        <a href="articles/article1.html">Homemade Raytracing Renderer with Vex</a>
-                    </h4>
-                    <p>by Xinyu (Robin) Cai</p>
-                    <p>I used to make a very simple renderer in sop wrangle, and after the release of Copernicus in H20.5, I realized that I could manipulate pixels directly in a cop wrangle.</p>
-                </div>
+                <div class="category2">
+                    <article>
+                        <img width="200" src="https://cdnb.artstation.com/p/assets/images/images/084/354/469/large/xinyu-robin-cai-snipaste-2025-01-07-15-48-27.jpg?1738163978" alt="article cover">
+                        <h4>
+                            <a href="articles/article1.html">Homemade Raytracing Renderer with Vex</a>
+                        </h4>
+                        <p>by Xinyu (Robin) Cai</p>
+                        <p>I used to make a very simple renderer in sop wrangle, and after the release of Copernicus in H20.5, I realized that I could manipulate pixels directly in a cop wrangle.</p>
+                    </article>
 
-                <div>
-                    <img width="200" src="https://cdna.artstation.com/p/assets/images/images/080/076/426/large/xinyu-robin-cai-colorscript.jpg?1726601934" alt="article cover">
-                    <h4>
-                        <a href="articles/article2.html">Moth to a Candle: Story and Storyboards</a>
-                    </h4>
-                    <p>by Xinyu (Robin) Cai</p>
-                    <p>It was a totally normal day in October, 2022. I was so bored and suddenly a sparkle flashed through my mind, telling me like: hey hey why not making a short film? At that time I had a fire accident scene and a fully rigged and cloth-setuped character, so I just responded like: why not?</p>
+                    <article>
+                        <img width="200" src="https://cdna.artstation.com/p/assets/images/images/080/076/426/large/xinyu-robin-cai-colorscript.jpg?1726601934" alt="article cover">
+                        <h4>
+                            <a href="articles/article2.html">Moth to a Candle: Story and Storyboards</a>
+                        </h4>
+                        <p>by Xinyu (Robin) Cai</p>
+                        <p>It was a totally normal day in October, 2022. I was so bored and suddenly a sparkle flashed through my mind, telling me like: hey hey why not making a short film? At that time I had a fire accident scene and a fully rigged and cloth-setuped character, so I just responded like: why not?</p>
+                    </article>
                 </div>
             </div>
 
             <hr>
 
-            <div>
+            <div class="category">
                 <h3>Technical</h3>
 
-                <div>
-                    <img width="200" src="https://cdnb.artstation.com/p/assets/images/images/080/076/365/large/xinyu-robin-cai-1.jpg?1726601829" alt="article cover">
-                    <h4>
-                        <a href="articles/article3.html">Moth to a Candle: Geo Techniques</a>
-                    </h4>
-                    <p>by Xinyu (Robin) Cai</p>
-                    <p>I used a Draw Curve node to draw some simple tear lines. After some noise on position and pscale, a Carve node allowed me to animate tear lines, making them slide through Miss. Candleheart's face.</p>
-                </div>
+                <div class="category2">
+                    <article>
+                        <img width="200" src="https://cdnb.artstation.com/p/assets/images/images/080/076/365/large/xinyu-robin-cai-1.jpg?1726601829" alt="article cover">
+                        <h4>
+                            <a href="articles/article3.html">Moth to a Candle: Geo Techniques</a>
+                        </h4>
+                        <p class="technical_author">by Xinyu (Robin) Cai</p>
+                        <p>I used a Draw Curve node to draw some simple tear lines. After some noise on position and pscale, a Carve node allowed me to animate tear lines, making them slide through Miss. Candleheart's face.</p>
+                    </article>
 
-                <div>
-                    <img width="200" src="https://img.youtube.com/vi/T9DiPQO_0_k/maxresdefault.jpg" alt="article cover">
-                    <h4>
-                        <a href="articles/article4.html">Cloth & Hair Simulation Pipeline of CLS</a>
-                    </h4>
-                    <p>by Xinyu (Robin) Cai</p>
-                    <p>In September 2023, I joined Crash Landing Studio to do cloth & hair simulation for their stunning animation works, but as there were more and more shots to handle, I realized that I need to clean up my node network and make my pipeline more clear and efficient.</p>
+                    <article>
+                        <img width="200" src="https://img.youtube.com/vi/T9DiPQO_0_k/maxresdefault.jpg" alt="article cover">
+                        <h4>
+                            <a href="articles/article4.html">Cloth & Hair Simulation Pipeline of CLS</a>
+                        </h4>
+                        <p class="technical_author">by Xinyu (Robin) Cai</p>
+                        <p>In September 2023, I joined Crash Landing Studio to do cloth & hair simulation for their stunning animation works, but as there were more and more shots to handle, I realized that I need to clean up my node network and make my pipeline more clear and efficient.</p>
+                    </article>
                 </div>
             </div>
 
             <hr>
 
-            <div>
+            <div class="category">
                 <h3>Career</h3>
 
-                <div>
-                    <img width="200" src="https://raw.githubusercontent.com/RobinEversunshine/Portfolio_Website/refs/heads/main/images/code.jpg" alt="article cover">
-                    <h4>
-                        <a href="articles/article5.html">Time Management System</a>
-                    </h4>
-                    <p>by Xinyu (Robin) Cai</p>
-                    <p>These days I'm trying a new method of time management from Alexander Alexandrovich Lyubishchev, a Soviet entomologist and philosopher. I believe you heard about the 10,000 hours theory, and he spent about 6 years to reach this level multiple times in so many different areas. He never stopped writing journals since about 1912 for a single day, even with 2 world wars and the death of his son. He did so much in his life that could be a sum of multiple lifetimes.</p>
-                </div>
+                <div class="category2">
+                    <article>
+                        <img width="200" src="https://raw.githubusercontent.com/RobinEversunshine/Portfolio_Website/refs/heads/main/images/code.jpg" alt="article cover">
+                        <h4>
+                            <a href="articles/article5.html">Time Management System</a>
+                        </h4>
+                        <p class="career_author">by Xinyu (Robin) Cai</p>
+                        <p>These days I'm trying a new method of time management from Alexander Alexandrovich Lyubishchev, a Soviet entomologist and philosopher. I believe you heard about the 10,000 hours theory, and he spent about 6 years to reach this level multiple times in so many different areas. He never stopped writing journals since about 1912 for a single day, even with 2 world wars and the death of his son. He did so much in his life that could be a sum of multiple lifetimes.</p>
+                    </article>
 
-                <div>
-                    <img width="200" src="https://cdna.artstation.com/p/assets/images/images/080/076/390/large/xinyu-robin-cai-8.jpg?1726601879" alt="article cover">
-                    <h4>
-                        <a href="articles/article6.html">Moth to a Candle: Compositing</a>
-                    </h4>
-                    <p>by Xinyu (Robin) Cai</p>
-                    <p>There weren’t really much techniques I used in the compositing part, for the most frequent things I did was grading, color correcting, adjusting values, color splitting (slight scale at red channel) and adding grains.</p>
+                    <article>
+                        <img width="200" src="https://cdna.artstation.com/p/assets/images/images/080/076/390/large/xinyu-robin-cai-8.jpg?1726601879" alt="article cover">
+                        <h4>
+                            <a href="articles/article6.html">Moth to a Candle: Compositing</a>
+                        </h4>
+                        <p class="career_author">by Xinyu (Robin) Cai</p>
+                        <p>There weren’t really much techniques I used in the compositing part, for the most frequent things I did was grading, color correcting, adjusting values, color splitting (slight scale at red channel) and adding grains.</p>
+                    </article>
                 </div>
             </div>
-
         </div>
-    </div>
+    
 
     <hr>
     <div>
@@ -156,7 +163,7 @@
         </div>
         <div>
             <iframe src="https://player.vimeo.com/video/1098691715?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
-            width="640" height="360" 
+            width="100%" height="360" 
             frameborder="0" allow="autoplay; fullscreen; clipboard-write; encrypted-media" 
             title="Robin Cai 2025 Visual Effects &amp; Technical Art Demoreel"></iframe>
             
