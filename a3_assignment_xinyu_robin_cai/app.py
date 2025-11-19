@@ -25,6 +25,8 @@ cursor = conn.cursor(dictionary=True)
 
 
 
+
+
 # main page
 @app.route("/")
 def index():
@@ -129,18 +131,18 @@ def process_login():
     ''', (username, password))
 
     record = cursor.fetchone()
-    print(record)
 
     if(record):
         session['username'] = record['username']
         session['role'] = record['role']
+        session['userid'] = record['userid']
         return redirect("/")
 
     else:
         return render_template("not-logged-in.html")
 
 
-
+# logged out page
 @app.route("/logout")
 def process_logout():
     session.clear()
@@ -163,18 +165,27 @@ def process_register():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    cursor.execute('''
-    INSERT INTO `users` (userid, username, password)
-    VALUES (%s, %s, %s)
-    ''', ('NULL',username, password))
+    # avoid same user name
+    cursor.execute('''SELECT * FROM `users` WHERE `username` = %s''', (username, ))
+    if not cursor.fetchone():
 
-    conn.commit()
+        cursor.execute('''
+        INSERT INTO `users` (userid, username, password)
+        VALUES (%s, %s, %s)
+        ''', ('NULL',username, password))
 
-    session['username'] = username
-    session['role'] = 0
+        conn.commit()
 
-    return render_template("registered.html", username = username)
+        cursor.execute('''SELECT * FROM `users` WHERE `username` = %s''', (username, ))
+        record = cursor.fetchone()
 
+        session['username'] = username
+        session['role'] = 0
+        session['userid'] = record['userid']
+
+        return render_template("registered.html", username = username)
+    else:
+        return render_template("not-registered.html", username = username)
 
 
 
@@ -192,7 +203,7 @@ def addArticle():
 def confirm_add():
     if request.method == 'POST':
 
-        articleid = request.form.get('articleid')
+        # articleid = request.form.get('articleid')
         title = request.form.get('title')
         author = request.form.get('author')
         content = request.form.get('content')
@@ -269,3 +280,78 @@ def confirm_delete():
         conn.commit()
 
     return render_template("confirm-delete.html")
+
+
+
+
+
+# like article
+@app.route("/like/<articleid>")
+def likeArticle(articleid):
+    userid = session["userid"]
+
+    cursor.execute('''SELECT * FROM `user-article`
+                   WHERE `articleid` = %s;
+                   AND WHERE `userid` = %s;
+                   ''', (articleid, userid))
+    user_article = cursor.fetchone()
+
+    if not user_article:
+        cursor.execute('''
+        INSERT INTO `user-article` (userid, articleid)
+        VALUES (%s, %s)
+        ''', (userid, articleid))
+
+        conn.commit()
+
+        cursor.execute('''SELECT * FROM `user-article`
+                   WHERE `articleid` = %s;
+                   AND WHERE `userid` = %s;
+                   ''', (articleid, userid))
+        user_article = cursor.fetchone()
+
+
+    
+    cursor.execute('''SELECT * FROM `articles` WHERE `articleid` = %s''', (articleid, ))
+    article = cursor.fetchone()
+
+    if user_article.like == 0:
+        user_article.like = 1
+        cursor.execute('''UPDATE `user_article` 
+                    SET `like` = %s 
+                    WHERE `articles`.`articleid` = %s; 
+                    AND WHERE `users`.`userid` = %s;''', (1, articleid, userid))
+        article.likes += 1
+        cursor.execute('''UPDATE `articles` 
+                    SET `likes` = %s 
+                    WHERE `articles`.`articleid` = %s;''', (article.likes, articleid))
+    elif user_article.like == 1:
+        user_article.like = 0
+        cursor.execute('''UPDATE `user_article` 
+                    SET `like` = %s 
+                    WHERE `articles`.`articleid` = %s; 
+                    AND WHERE `users`.`userid` = %s;''', (0, articleid, userid))
+        article.likes -= 1
+        cursor.execute('''UPDATE `articles` 
+                    SET `likes` = %s 
+                    WHERE `articles`.`articleid` = %s;''', (article.likes, articleid))
+
+    
+    return render_template("")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

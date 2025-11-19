@@ -68,7 +68,10 @@
             <p>{{feature.content}}</p>
             <p>likes: {{feature.likes}}</p>
             {% if (role == 0) %}
-                <a href="/like/{{feature.articleid}}">Like this article</a>
+                <a href="/like/{{feature.articleid}}">
+                    Like this article
+                    Unlike this article
+                </a>
             {% elif (role == 1) %}
                 <a href="/edit/{{feature.articleid}}">edit</a>
                 <a href="/delete/{{feature.articleid}}">delete</a>
