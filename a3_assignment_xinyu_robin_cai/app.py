@@ -1,12 +1,12 @@
-# flask --app app run
-
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect
 from dotenv import load_dotenv
 import mysql.connector
 import os
 
 
 app = Flask(__name__)
+
+app.secret_key = os.getenv('SECRET_KEY')
 
 # Set the configuration from environment variables
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
@@ -21,39 +21,251 @@ password=app.config['MYSQL_PASSWORD'],
 database=app.config['MYSQL_DB']
 )
 
-cursor = conn.cursor()
+cursor = conn.cursor(dictionary=True)
 
 
 
+# main page
 @app.route("/")
 def index():
-    return render_template("form.html")
+
+    cursor.execute('''SELECT * FROM `articles`''')
+    rows = cursor.fetchall()
+
+    cursor.execute('''SELECT * FROM `articles` WHERE `isfeature` = 1''')
+    features = cursor.fetchall()
+
+    username = 'null'
+    role = 'null'
+    if "username" in session:
+        username = session['username']
+        role = session['role']
+
+    data = {
+        "rows": rows,
+        "features": features,
+        "username": username,
+        "role": role,
+    }
+
+    return render_template("index.html", **data)
 
 
-@app.route("/submit-form", methods = "POST")
+
+# article page
+@app.route("/article/<articleid>")
+def article(articleid):
+    cursor.execute('''SELECT * FROM `articles` WHERE `articleid` = %s''', (articleid, ))
+    article = cursor.fetchone()
+    return render_template("article.html", article = article)
+
+
+
+# about page
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+
+# contact page
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
+# view contact list page
+@app.route("/view-contact")
+def view_contact():
+    cursor.execute('''SELECT * FROM `contacts`''')
+    rows = cursor.fetchall()
+
+    return render_template("view-contact.html", rows = rows)
+
+
+
+# add contact information
+@app.route("/process-contact", methods = ["POST"])
 def submit_form():
 
     fname = request.form.get('fname')
     lname = request.form.get('lname')
-    dob = request.form.get('dob')
-
 
     cursor.execute('''
-    INSERT INTO `Person` (personid, fname, lname, DOB)
-    VALUES (%s, %s, %s, %s)
-    ''', ('NULL',fname, lname, dob))
+    INSERT INTO `contacts` (personid, fname, lname)
+    VALUES (%s, %s, %s)
+    ''', ('NULL', fname, lname))
 
     conn.commit()
-
-
 
     data = {
         "fname": fname,
         "lname": lname,
-        "dob": dob,
     }
-
 
     return render_template("submit-form.html", **data)
 
 
+
+
+# log in page
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
+# logged in page
+@app.route("/process-login", methods = ["POST"])
+def process_login():
+
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    cursor.execute('''
+    SELECT * 
+    FROM `users` 
+    WHERE `username` = %s 
+    AND `password` = %s
+    ''', (username, password))
+
+    record = cursor.fetchone()
+    print(record)
+
+    if(record):
+        session['username'] = record['username']
+        session['role'] = record['role']
+        return redirect("/")
+
+    else:
+        return render_template("not-logged-in.html")
+
+
+
+@app.route("/logout")
+def process_logout():
+    session.clear()
+    return render_template('logout.html')
+
+
+
+
+
+# register page
+@app.route("/register")
+def register():
+    return render_template("register.html")
+
+
+# registered page
+@app.route("/process-register", methods = ["POST"])
+def process_register():
+
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    cursor.execute('''
+    INSERT INTO `users` (userid, username, password)
+    VALUES (%s, %s, %s)
+    ''', ('NULL',username, password))
+
+    conn.commit()
+
+    session['username'] = username
+    session['role'] = 0
+
+    return render_template("registered.html", username = username)
+
+
+
+
+
+
+
+# add article
+@app.route("/add")
+def addArticle():
+    return render_template("add-article.html")
+
+
+# confirm add
+@app.route("/confirm-add", methods=['POST'])
+def confirm_add():
+    if request.method == 'POST':
+
+        articleid = request.form.get('articleid')
+        title = request.form.get('title')
+        author = request.form.get('author')
+        content = request.form.get('content')
+        image = request.form.get('image')
+        isfeature = request.form.get('isfeature')
+
+        if not isfeature:
+            isfeature = 0
+
+        cursor.execute('''
+        INSERT INTO `articles` (articleid, title, author, content, image, isfeature)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ''', ('NULL', title, author, content, image, isfeature))
+
+        conn.commit()
+
+    return render_template("confirm-add.html")
+
+
+
+# edit article
+@app.route("/edit/<articleid>")
+def editArticle(articleid):
+    cursor.execute('''SELECT * FROM `articles` WHERE `articleid` = %s''', (articleid, ))
+    article = cursor.fetchone()
+        
+    return render_template("edit-article.html", articleid = articleid, article = article)
+
+
+# confirm edit
+@app.route("/confirm-edit", methods=['POST'])
+def confirm_edit():
+    if request.method == 'POST':
+
+        articleid = request.form.get('articleid')
+        title = request.form.get('title')
+        author = request.form.get('author')
+        content = request.form.get('content')
+        image = request.form.get('image')
+        isfeature = request.form.get('isfeature')
+
+        if not isfeature:
+            isfeature = 0
+
+        cursor.execute('''UPDATE `articles` 
+                    SET `title` = %s, 
+                    `author` = %s, 
+                    `content` = %s, 
+                    `image` = %s, 
+                    `isfeature` = %s 
+                    WHERE `articles`.`articleid` = %s;''', (title, author, content, image, isfeature, articleid))
+        conn.commit()
+
+    return render_template("confirm-edit.html")
+
+
+
+# delete article
+@app.route("/delete/<articleid>")
+def deleteArticle(articleid):
+    cursor.execute('''SELECT * FROM `articles` WHERE `articleid` = %s''', (articleid, ))
+    article = cursor.fetchone()
+
+    return render_template("delete-article.html", articleid = articleid, article = article)
+
+
+# confirm delete
+@app.route("/confirm-delete", methods=['POST'])
+def confirm_delete():
+    if request.method == 'POST':
+
+        articleid = request.form.get('articleid')
+        cursor.execute('''DELETE FROM articles WHERE `articles`.`articleid` = %s''', (articleid, ))
+        conn.commit()
+
+    return render_template("confirm-delete.html")

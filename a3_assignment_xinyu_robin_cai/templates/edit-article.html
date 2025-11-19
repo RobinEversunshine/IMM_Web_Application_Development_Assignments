@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Edit article "{{article.title}}"</h1>
+    
+    <form action="/confirm-edit" method="POST">
+        title<input name="title" type="text" value="{{article.title}}">
+        author<input name="author" type="text" value="{{article.author}}">
+        content<input name="content" type="text" value="{{article.content}}">
+        image link<input name="image" type="text" value="{{article.image}}">
+        is feature<input name="isfeature" type="checkbox" value="1" {% if (article.isfeature) %}checked{% endif %}>
+        <input name="articleid" type="hidden" value = "{{article.articleid}}">
+        <input type="submit">
+    </form>
+    <a href="/">Home</a>
+</body>
+</html>

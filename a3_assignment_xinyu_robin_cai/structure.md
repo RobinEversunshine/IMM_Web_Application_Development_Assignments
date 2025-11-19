@@ -27,9 +27,10 @@ admin
 DB
 
 user
+    userid
     username
     password
-    type (member or admin)
+    role (member or admin)
 
 
 
@@ -39,6 +40,10 @@ user-article
 
 
 article
-    id
+    articleid
+    title
+    author
     content
+    image
     likes
+    isfeature
