@@ -201,26 +201,30 @@ def addArticle():
 # confirm add
 @app.route("/confirm-add", methods=['POST'])
 def confirm_add():
-    if request.method == 'POST':
+    role = session['role']
+    if(role != 1):
+        return "Stop hacking"
+    else:
+        if request.method == 'POST':
 
-        # articleid = request.form.get('articleid')
-        title = request.form.get('title')
-        author = request.form.get('author')
-        content = request.form.get('content')
-        image = request.form.get('image')
-        isfeature = request.form.get('isfeature')
+            # articleid = request.form.get('articleid')
+            title = request.form.get('title')
+            author = request.form.get('author')
+            content = request.form.get('content')
+            image = request.form.get('image')
+            isfeature = request.form.get('isfeature')
 
-        if not isfeature:
-            isfeature = 0
+            if not isfeature:
+                isfeature = 0
 
-        cursor.execute('''
-        INSERT INTO `articles` (articleid, title, author, content, image, isfeature)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        ''', ('NULL', title, author, content, image, isfeature))
+            cursor.execute('''
+            INSERT INTO `articles` (articleid, title, author, content, image, isfeature)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ''', ('NULL', title, author, content, image, isfeature))
 
-        conn.commit()
+            conn.commit()
 
-    return render_template("confirm-add.html")
+        return render_template("confirm-add.html")
 
 
 
@@ -236,28 +240,32 @@ def editArticle(articleid):
 # confirm edit
 @app.route("/confirm-edit", methods=['POST'])
 def confirm_edit():
-    if request.method == 'POST':
+    role = session['role']
+    if(role != 1):
+        return "Stop hacking"
+    else:
+        if request.method == 'POST':
 
-        articleid = request.form.get('articleid')
-        title = request.form.get('title')
-        author = request.form.get('author')
-        content = request.form.get('content')
-        image = request.form.get('image')
-        isfeature = request.form.get('isfeature')
+            articleid = request.form.get('articleid')
+            title = request.form.get('title')
+            author = request.form.get('author')
+            content = request.form.get('content')
+            image = request.form.get('image')
+            isfeature = request.form.get('isfeature')
 
-        if not isfeature:
-            isfeature = 0
+            if not isfeature:
+                isfeature = 0
 
-        cursor.execute('''UPDATE `articles` 
-                    SET `title` = %s, 
-                    `author` = %s, 
-                    `content` = %s, 
-                    `image` = %s, 
-                    `isfeature` = %s 
-                    WHERE `articles`.`articleid` = %s;''', (title, author, content, image, isfeature, articleid))
-        conn.commit()
+            cursor.execute('''UPDATE `articles` 
+                        SET `title` = %s, 
+                        `author` = %s, 
+                        `content` = %s, 
+                        `image` = %s, 
+                        `isfeature` = %s 
+                        WHERE `articles`.`articleid` = %s;''', (title, author, content, image, isfeature, articleid))
+            conn.commit()
 
-    return render_template("confirm-edit.html")
+        return render_template("confirm-edit.html")
 
 
 
@@ -273,13 +281,17 @@ def deleteArticle(articleid):
 # confirm delete
 @app.route("/confirm-delete", methods=['POST'])
 def confirm_delete():
-    if request.method == 'POST':
+    role = session['role']
+    if(role != 1):
+        return "Stop hacking"
+    else:
+        if request.method == 'POST':
 
-        articleid = request.form.get('articleid')
-        cursor.execute('''DELETE FROM articles WHERE `articles`.`articleid` = %s''', (articleid, ))
-        conn.commit()
+            articleid = request.form.get('articleid')
+            cursor.execute('''DELETE FROM articles WHERE `articles`.`articleid` = %s''', (articleid, ))
+            conn.commit()
 
-    return render_template("confirm-delete.html")
+        return render_template("confirm-delete.html")
 
 
 
@@ -288,56 +300,60 @@ def confirm_delete():
 # like article
 @app.route("/like/<articleid>")
 def likeArticle(articleid):
-    userid = session["userid"]
-
-    cursor.execute('''SELECT * FROM `user-article`
-                   WHERE `articleid` = %s;
-                   AND WHERE `userid` = %s;
-                   ''', (articleid, userid))
-    user_article = cursor.fetchone()
-
-    if not user_article:
-        cursor.execute('''
-        INSERT INTO `user-article` (userid, articleid)
-        VALUES (%s, %s)
-        ''', (userid, articleid))
-
-        conn.commit()
+    role = session['role']
+    if(role != 0):
+        return "Stop hacking"
+    else:
+        userid = session["userid"]
 
         cursor.execute('''SELECT * FROM `user-article`
-                   WHERE `articleid` = %s;
-                   AND WHERE `userid` = %s;
-                   ''', (articleid, userid))
+                    WHERE `articleid` = %s;
+                    AND WHERE `userid` = %s;
+                    ''', (articleid, userid))
         user_article = cursor.fetchone()
 
+        if not user_article:
+            cursor.execute('''
+            INSERT INTO `user-article` (userid, articleid)
+            VALUES (%s, %s)
+            ''', (userid, articleid))
 
-    
-    cursor.execute('''SELECT * FROM `articles` WHERE `articleid` = %s''', (articleid, ))
-    article = cursor.fetchone()
+            conn.commit()
 
-    if user_article.like == 0:
-        user_article.like = 1
-        cursor.execute('''UPDATE `user_article` 
-                    SET `like` = %s 
-                    WHERE `articles`.`articleid` = %s; 
-                    AND WHERE `users`.`userid` = %s;''', (1, articleid, userid))
-        article.likes += 1
-        cursor.execute('''UPDATE `articles` 
-                    SET `likes` = %s 
-                    WHERE `articles`.`articleid` = %s;''', (article.likes, articleid))
-    elif user_article.like == 1:
-        user_article.like = 0
-        cursor.execute('''UPDATE `user_article` 
-                    SET `like` = %s 
-                    WHERE `articles`.`articleid` = %s; 
-                    AND WHERE `users`.`userid` = %s;''', (0, articleid, userid))
-        article.likes -= 1
-        cursor.execute('''UPDATE `articles` 
-                    SET `likes` = %s 
-                    WHERE `articles`.`articleid` = %s;''', (article.likes, articleid))
+            cursor.execute('''SELECT * FROM `user-article`
+                    WHERE `articleid` = %s;
+                    AND WHERE `userid` = %s;
+                    ''', (articleid, userid))
+            user_article = cursor.fetchone()
 
-    
-    return render_template("")
+
+        
+        cursor.execute('''SELECT * FROM `articles` WHERE `articleid` = %s''', (articleid, ))
+        article = cursor.fetchone()
+
+        if user_article.like == 0:
+            user_article.like = 1
+            cursor.execute('''UPDATE `user_article` 
+                        SET `like` = %s 
+                        WHERE `articles`.`articleid` = %s; 
+                        AND WHERE `users`.`userid` = %s;''', (1, articleid, userid))
+            article.likes += 1
+            cursor.execute('''UPDATE `articles` 
+                        SET `likes` = %s 
+                        WHERE `articles`.`articleid` = %s;''', (article.likes, articleid))
+        elif user_article.like == 1:
+            user_article.like = 0
+            cursor.execute('''UPDATE `user_article` 
+                        SET `like` = %s 
+                        WHERE `articles`.`articleid` = %s; 
+                        AND WHERE `users`.`userid` = %s;''', (0, articleid, userid))
+            article.likes -= 1
+            cursor.execute('''UPDATE `articles` 
+                        SET `likes` = %s 
+                        WHERE `articles`.`articleid` = %s;''', (article.likes, articleid))
+
+        
+        return render_template("")
 
 
 
