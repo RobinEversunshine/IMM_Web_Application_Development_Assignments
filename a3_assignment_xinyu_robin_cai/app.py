@@ -43,6 +43,7 @@ def index():
         username = session['username']
         role = session['role']
 
+
     data = {
         "rows": rows,
         "features": features,
@@ -66,7 +67,44 @@ def article(articleid):
 # about page
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    cursor.execute('''SELECT * FROM `about`''')
+    about = cursor.fetchone()
+
+    role = 'null'
+    if "username" in session:
+        role = session['role']
+    
+    return render_template("about.html", about = about, role = role)
+
+
+
+# edit about
+@app.route("/edit-about")
+def editAbout():
+    cursor.execute('''SELECT * FROM `about`''')
+    about = cursor.fetchone()
+        
+    return render_template("edit-about.html", about = about)
+
+
+# confirm edit about
+@app.route("/confirm-edit-about", methods=['POST'])
+def confirm_edit_about():
+    role = session['role']
+    if(role != 1):
+        return "Stop hacking"
+    else:
+        if request.method == 'POST':
+
+            content = request.form.get('content')
+
+            cursor.execute('''UPDATE `about` 
+                        SET `content` = %s
+                        WHERE `about`.`id` = 0;''', (content, ))
+            conn.commit()
+
+        return render_template("confirm-edit-about.html")
+
 
 
 
@@ -307,53 +345,49 @@ def likeArticle(articleid):
         userid = session["userid"]
 
         cursor.execute('''SELECT * FROM `user-article`
-                    WHERE `articleid` = %s;
-                    AND WHERE `userid` = %s;
+                    WHERE `articleid` = %s
+                    AND `userid` = %s;
                     ''', (articleid, userid))
         user_article = cursor.fetchone()
 
+        # no relation between user and article, create one
         if not user_article:
             cursor.execute('''
-            INSERT INTO `user-article` (userid, articleid)
-            VALUES (%s, %s)
+            INSERT INTO `user-article` (userid, articleid, liked)
+            VALUES (%s, %s, 0)
             ''', (userid, articleid))
 
             conn.commit()
 
             cursor.execute('''SELECT * FROM `user-article`
-                    WHERE `articleid` = %s;
-                    AND WHERE `userid` = %s;
+                    WHERE `articleid` = %s
+                    AND `userid` = %s;
                     ''', (articleid, userid))
             user_article = cursor.fetchone()
 
-
+        print(user_article)
         
         cursor.execute('''SELECT * FROM `articles` WHERE `articleid` = %s''', (articleid, ))
         article = cursor.fetchone()
 
-        if user_article.like == 0:
-            user_article.like = 1
-            cursor.execute('''UPDATE `user_article` 
-                        SET `like` = %s 
-                        WHERE `articles`.`articleid` = %s; 
-                        AND WHERE `users`.`userid` = %s;''', (1, articleid, userid))
-            article.likes += 1
+        if user_article["liked"] == 0:
+            cursor.execute('''UPDATE `user-article` 
+                        SET `liked` = %s 
+                        WHERE `user-article`.`articleid` = %s
+                        AND `user-article`.`userid` = %s;''', (1, articleid, userid))
             cursor.execute('''UPDATE `articles` 
                         SET `likes` = %s 
-                        WHERE `articles`.`articleid` = %s;''', (article.likes, articleid))
-        elif user_article.like == 1:
-            user_article.like = 0
-            cursor.execute('''UPDATE `user_article` 
-                        SET `like` = %s 
-                        WHERE `articles`.`articleid` = %s; 
-                        AND WHERE `users`.`userid` = %s;''', (0, articleid, userid))
-            article.likes -= 1
+                        WHERE `articles`.`articleid` = %s;''', (article["likes"] + 1, articleid))
+        elif user_article["liked"] == 1:
+            cursor.execute('''UPDATE `user-article` 
+                        SET `liked` = %s 
+                        WHERE `user-article`.`articleid` = %s
+                        AND `user-article`.`userid` = %s;''', (0, articleid, userid))
             cursor.execute('''UPDATE `articles` 
                         SET `likes` = %s 
-                        WHERE `articles`.`articleid` = %s;''', (article.likes, articleid))
-
-        
-        return render_template("")
+                        WHERE `articles`.`articleid` = %s;''', (article["likes"] - 1, articleid))
+        conn.commit()
+        return redirect("/")
 
 
 

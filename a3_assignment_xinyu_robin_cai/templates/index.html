@@ -65,12 +65,11 @@
                 <a href="article/{{feature.articleid}}">{{feature.title}}</a>
             </h4>
             <p>by {{feature.author}}</p>
-            <p>{{feature.content}}</p>
+            <p style="white-space: pre-line;">{{feature.content}}</p>
             <p>likes: {{feature.likes}}</p>
             {% if (role == 0) %}
                 <a href="/like/{{feature.articleid}}">
-                    Like this article
-                    Unlike this article
+                    Like or unlike this article
                 </a>
             {% elif (role == 1) %}
                 <a href="/edit/{{feature.articleid}}">edit</a>
@@ -78,6 +77,7 @@
             {% endif %}
         </article>
         &nbsp;
+        <hr><hr>
         {% endfor %}
     </div>
 
@@ -94,16 +94,19 @@
                             <a href="article/{{row.articleid}}">{{row.title}}</a>
                         </h4>
                         <p>by {{row.author}}</p>
-                        <p>{{row.content}}</p>
+                        <p style="white-space: pre-line;">{{row.content}}</p>
                         <p>likes: {{row.likes}}</p>
                         {% if (role == 0) %}
-                            <a href="/like/{{row.articleid}}">Like this article</a>
+                            <a href="/like/{{row.articleid}}">
+                                Like or unlike this article
+                            </a>
                         {% elif (role == 1) %}
                             <a href="/edit/{{row.articleid}}">edit</a>
                             <a href="/delete/{{row.articleid}}">delete</a>
                         {% endif %}
                     </article>
                     &nbsp;
+                    <hr><hr>
                     {% endfor %}
                 </div>
             </div>

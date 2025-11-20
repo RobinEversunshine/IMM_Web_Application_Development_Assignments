@@ -9,11 +9,16 @@
     <h1>Add new article</h1>
     
     <form action="/confirm-add" method="POST">
-        title<input name="title" type="text">
+        title<textarea name="title" type="text" rows = "5" cols="50"></textarea>
+        <hr>
         author<input name="author" type="text">
-        content<input name="content" type="text">
-        image link<input name="image" type="text">
+        <hr>
+        content<textarea name="content" type="text" rows = "10" cols="50"></textarea>
+        <hr>
+        image<textarea name="image" type="text" rows = "5" cols="50"></textarea>
+        <hr>
         is feature<input name="isfeature" type="checkbox" value="1">
+        <hr>
 
         <input type="submit">
     </form>
